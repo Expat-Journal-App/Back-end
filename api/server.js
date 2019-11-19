@@ -16,6 +16,8 @@ server.use(helmet());
 server.use(express.json());
 
 server.use("/api/stories", storiesRouter);
+
+// DUMMY ENDPOINT TO TEST
 server.get("/", (req, res) => {
   res.status(200).json({ api: "up" });
 });
