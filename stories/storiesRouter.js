@@ -29,4 +29,18 @@ router.get("/:id", middleware.checkValidtyId, (req, res) => {
   res.status(200).json(req.data);
 });
 
+// ADD A STORY
+
+router.post("/", (req, res) => {
+  Stories.insertStory(req.body)
+    .then(data => {
+      res.status(200).json(data);
+    })
+    .catch(error => {
+      res
+        .status(500)
+        .json({ message: `Your story could not be posted: ${error.message}` });
+    });
+});
+
 module.exports = router;
