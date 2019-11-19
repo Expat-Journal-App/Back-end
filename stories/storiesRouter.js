@@ -21,17 +21,23 @@ router.get("/", (req, res) => {
 });
 
 // GET STORY BY ID ENDPOINT
-router.get("/:id", (req, res) => {
-  Stories.getStoriesById(req.params.id)
+router.get("/:id", checkValidtyId, (req, res) => {
+  res.status(200).json(req.data);
+});
+
+function checkValidtyId(req, res, next) {
+  const { id } = req.params;
+  Stories.getStoriesById(id)
     .then(data => {
-      res.status(200).json(data);
+      if (!data) {
+        res.status(404).json({ message: `Story ${id} could not be found` });
+      } else {
+        req.data = data;
+        next();
+      }
     })
     .catch(error => {
-      res
-        .status(500)
-        .json({
-          message: `There was an error fetching story ${id}: ${error.message}`
-        });
+      console.log(error);
     });
-});
+}
 module.exports = router;
