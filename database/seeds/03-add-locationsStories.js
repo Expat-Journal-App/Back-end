@@ -13,8 +13,8 @@ exports.seed = function(knex) {
         { story_id: 6, location_id: 6 },
         { story_id: 7, location_id: 7 },
         { story_id: 8, location_id: 8 },
-        { story_id: 9, location_id: 9 },
-        { story_id: 10, location_id: 10 }
+        { story_id: 9, location_id: 9 }
+        // { story_id: 10, location_id: 10 }
       ]);
     });
 };
