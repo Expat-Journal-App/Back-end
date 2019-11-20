@@ -2,7 +2,8 @@ const db = require("../database/db-config");
 
 module.exports = {
   getAll,
-  getStoriesById
+  getStoriesById,
+  insertStory
 };
 
 function getAll() {
@@ -41,4 +42,52 @@ function getStoriesById(id) {
     )
     .where("S.id", id)
     .first();
+}
+
+function insertStory(story) {
+  return db("stories")
+    .insert({
+      title: story.title,
+      story: story.story,
+      date_trip: story.date_trip
+    })
+    .then(storyId => {
+      const newPhoto = insertPhoto(story, storyId[0]);
+      const newLocation = insertLocation(story);
+      return Promise.all([newPhoto, newLocation])
+        .then(data => {
+          return insertLocationStory(storyId[0], data[1][0])
+            .then(() => {
+              return getStoriesById(storyId[0]);
+            })
+            .catch(error => {
+              console.log(error);
+            });
+        })
+        .catch(error => {
+          console.log(error);
+        });
+    });
+}
+
+function insertPhoto(story, storyId) {
+  return db("photos").insert({
+    url: story.url,
+    description: story.description,
+    story_id: storyId
+  });
+}
+
+function insertLocation(story) {
+  return db("locations").insert({
+    city: story.city,
+    country: story.country
+  });
+}
+
+function insertLocationStory(storyId, locationId) {
+  return db("locationsStories").insert({
+    story_id: storyId,
+    location_id: locationId
+  });
 }
