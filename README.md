@@ -22,3 +22,7 @@
             - `description`: `String`. Description of the photo. User input.
         - Error: Returns error message if you are trying to fetch a non-existant `id`:
             - Example: `{"message": "Story 91 could not be found"}`
+    - <b>[POST]</b>
+    - <b>[DELETE]</b> to `/api/stories/:id`
+        - Name: Delete a story by `id`
+        - Returns: `{message: "Story has been deleted"}` if story and depending photo has been deleted or `{message: `There was a problem deleting story ${id}`}` if there was a problem.
