@@ -6,7 +6,8 @@ module.exports = {
   insertStory,
   deleteStory,
   updateStory,
-  getStoriesBy
+  getStoriesBy,
+  findCity
 };
 
 function getAll() {
@@ -101,62 +102,57 @@ function insertLocationStory(storyId, locationId) {
   });
 }
 
-function updateStory(id, storyBody) {
-  const {
-    title,
-    story,
-    date_trip,
-    city,
-    country,
-    url,
-    description
-  } = storyBody;
-  const titleStoryExists = getStoriesBy({ title });
-  const textStoryExists = getStoriesBy({ story });
-  const locationExists = findCity({ city });
-  Promise.all([titleStoryExists, textStoryExists, locationExists])
-    .then(values => {
-      if (values[0].title || values[1].story) {
-        throw new Error("Required");
-      }
-    })
-    .catch(error => {
-      console.log(error);
-    });
-
-  // return db("stories")
-  //   .where({ id })
-  //   .update({
-  //     title,
-  //     story,
-  //     date_trip
-  //   })
-  //   .then(data => {
-  //     return !data
-  //       ? "The story could not be updated"
-  //       : db("photos")
-  //           .where({ story_id: id })
-  //           .update({ url, description })
-  //           .then(data => {
-  //             return !data
-  //               ? "There was a problem updating the photo"
-  //               : findCity(city)
-  //                   .then(data => {
-  //                     return !data
-  //                       ? addLocationStories(id, city, country)
-  //                       : editLocationsStories(id, data.id);
-  //                   })
-  //                   .catch(error => {
-  //                     console.log(error);
-  //                   });
-  //           })
-  //           .catch(error => {
-  //             console.log(error);
-  //           });
-  //   })
-  //   .catch(error => {
-  //     console.log(error);
-  //   });
+function updateStory(id, storyBody, cityExists, cityId) {
+  switch (cityExists) {
+    case false:
+      const updatingStory = db("stories")
+        .where({ id })
+        .update({
+          title: storyBody.title,
+          story: storyBody.story,
+          date_trip: storyBody.date_trip
+        });
+      const updatingPhoto = db("photos")
+        .where({ story_id: id })
+        .update({
+          url: storyBody.url,
+          description: storyBody.description
+        });
+      const addingLocation = addLocation({
+        city: storyBody.city,
+        country: storyBody.country
+      });
+      return Promise.all([updatingStory, updatingPhoto, addingLocation])
+        .then(values => {
+          return updateLocationsStories(id, values[2][0]);
+        })
+        .catch(error => {
+          console.log(error);
+        });
+    case true:
+      const updatingStoryTrue = db("stories")
+        .where({ id })
+        .update({
+          title: storyBody.title,
+          story: storyBody.story,
+          date_trip: storyBody.date_trip
+        });
+      const updatingPhotoTrue = db("photos")
+        .where({ story_id: id })
+        .update({
+          url: storyBody.url,
+          description: storyBody.description
+        });
+      return Promise.all([updatingStoryTrue, updatingPhotoTrue])
+        .then(() => {
+          return updateLocationsStories(id, cityId);
+        })
+        .catch(error => {
+          console.log(error);
+        });
+    default:
+      console.log("yay");
+  }
 }
 
 function updateStoryTable(id, story) {
@@ -182,11 +178,29 @@ function findCity(city) {
     .first();
 }
 
-function addLocationStories(id, city, country) {
-  return db("locations")
-    .insert({ city, country })
-    .then(location => {
-      return editLocationsStories(id, location[0]);
+function addLocationStories(storyId, locationId) {
+  return db("locationsStories")
+    .insert({
+      story_id: storyId,
+      location_id: locationId
+    })
+    .then(data => {
+      return getStoriesById(storyId);
+    })
+    .catch(error => {
+      console.log(error);
+    });
+}
+
+function updateLocationsStories(story_id, location_id) {
+  return db("locationsStories")
+    .where({ story_id: story_id })
+    .update({ location_id: location_id })
+    .then(data => {
+      return getStoriesById(story_id);
+    })
+    .catch(error => {
+      console.log(error);
     });
 }
 

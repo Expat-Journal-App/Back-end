@@ -8,7 +8,8 @@ const {
   checkValidtyId,
   checkBodyRequest,
   checkTitleExists,
-  checkTextStoryExists
+  checkTextStoryExists,
+  checkCityExists
 } = require("./helpers/middleware");
 
 // DUMMY TESTING ENDPOINT
@@ -52,17 +53,19 @@ router.post("/", checkBodyRequest, (req, res) => {
 
 router.put(
   "/:id",
-  [checkValidtyId, checkTitleExists, checkTextStoryExists],
+  [checkValidtyId, checkTitleExists, checkTextStoryExists, checkCityExists],
   (req, res) => {
     const { id } = req.params;
-    Stories.updateStory(id, req.body)
+    Stories.updateStory(id, req.body, req.cityExists, req.cityId)
       .then(data => {
         res.status(200).json(data);
       })
       .catch(error => {
-        res.status(500).json({
-          message: `There was an error updating your story: ${error.message}`
-        });
+        res
+          .status(401)
+          .json({
+            message: `There was an error editing your story: ${error.message}`
+          });
       });
   }
 );

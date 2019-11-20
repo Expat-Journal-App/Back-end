@@ -4,7 +4,8 @@ module.exports = {
   checkValidtyId,
   checkBodyRequest,
   checkTitleExists,
-  checkTextStoryExists
+  checkTextStoryExists,
+  checkCityExists
 };
 
 function checkValidtyId(req, res, next) {
@@ -21,7 +22,9 @@ function checkValidtyId(req, res, next) {
     .catch(error => {
       res
         .status(500)
-        .json({ message: `Error: story ${id} could not be found` });
+        .json({
+          message: `Error: story ${id} could not be found: ${error.message}`
+        });
     });
 }
 
@@ -51,7 +54,7 @@ function checkTitleExists(req, res, next) {
     })
     .catch(error => {
       res.status(500).json({
-        message: `Could not check if title of story exists in Database`
+        message: `Could not check if title of story exists in Database: ${error.message}`
       });
     });
 }
@@ -70,6 +73,33 @@ function checkTextStoryExists(req, res, next) {
       }
     })
     .catch(error => {
-      res.status(500).json({ message: `There was an error editing the story` });
+      res
+        .status(500)
+        .json({
+          message: `There was an error editing the story: ${error.message}`
+        });
+    });
+}
+
+function checkCityExists(req, res, next) {
+  const { city } = req.body;
+  Stories.findCity({ city })
+    .then(data => {
+      if (!data) {
+        req.cityExists = false;
+        req.cityId = null;
+        next();
+      } else {
+        req.cityExists = true;
+        req.cityId = data.id;
+        next();
+      }
+    })
+    .catch(error => {
+      res
+        .status(500)
+        .json({
+          message: `There was an error editing the story: ${error.message}`
+        });
     });
 }
