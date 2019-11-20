@@ -4,7 +4,7 @@ const Stories = require("./storiesModels");
 
 // IMPORT MIDDLEWARE
 
-const middleware = require("./helpers/middleware");
+const {checkValidtyId, checkBodyRequest} = require("./helpers/middleware");
 
 // DUMMY TESTING ENDPOINT
 router.get("/test", (req, res) => {
@@ -25,13 +25,13 @@ router.get("/", (req, res) => {
 });
 
 // GET STORY BY ID ENDPOINT
-router.get("/:id", middleware.checkValidtyId, (req, res) => {
+router.get("/:id", checkValidtyId, (req, res) => {
   res.status(200).json(req.data);
 });
 
 // ADD A STORY
 
-router.post("/", (req, res) => {
+router.post("/", checkBodyRequest, (req, res) => {
   Stories.insertStory(req.body)
     .then(data => {
       res.status(200).json(data);
