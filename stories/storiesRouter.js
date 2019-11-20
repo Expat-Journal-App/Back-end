@@ -4,7 +4,12 @@ const Stories = require("./storiesModels");
 
 // IMPORT MIDDLEWARE
 
-const { checkValidtyId, checkBodyRequest } = require("./helpers/middleware");
+const {
+  checkValidtyId,
+  checkBodyRequest,
+  checkTitleExists,
+  checkTextStoryExists
+} = require("./helpers/middleware");
 
 // DUMMY TESTING ENDPOINT
 router.get("/test", (req, res) => {
@@ -42,6 +47,25 @@ router.post("/", checkBodyRequest, (req, res) => {
         .json({ message: `Your story could not be posted: ${error.message}` });
     });
 });
+
+// EDIT A STORY
+
+router.put(
+  "/:id",
+  [checkValidtyId, checkTitleExists, checkTextStoryExists],
+  (req, res) => {
+    const { id } = req.params;
+    Stories.updateStory(id, req.body)
+      .then(data => {
+        res.status(200).json(data);
+      })
+      .catch(error => {
+        res.status(500).json({
+          message: `There was an error updating your story: ${error.message}`
+        });
+      });
+  }
+);
 
 // DELETE A STORY
 

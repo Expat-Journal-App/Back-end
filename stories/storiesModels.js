@@ -4,7 +4,9 @@ module.exports = {
   getAll,
   getStoriesById,
   insertStory,
-  deleteStory
+  deleteStory,
+  updateStory,
+  getStoriesBy
 };
 
 function getAll() {
@@ -42,6 +44,12 @@ function getStoriesById(id) {
       "P.description"
     )
     .where("S.id", id)
+    .first();
+}
+
+function getStoriesBy(filter) {
+  return db("stories")
+    .where(filter)
     .first();
 }
 
@@ -93,6 +101,70 @@ function insertLocationStory(storyId, locationId) {
   });
 }
 
+function updateStory(id, storyBody) {
+  const {
+    title,
+    story,
+    date_trip,
+    city,
+    country,
+    url,
+    description
+  } = storyBody;
+  const titleStoryExists = getStoriesBy({ title });
+  const textStoryExists = getStoriesBy({ story });
+  const locationExists = findCity({ city });
+  Promise.all([titleStoryExists, textStoryExists, locationExists])
+    .then(values => {
+      if (values[0].title || values[1].story) {
+        throw new Error("Required");
+      }
+    })
+    .catch(error => {
+      console.log(error);
+    });
+
+  // return db("stories")
+  //   .where({ id })
+  //   .update({
+  //     title,
+  //     story,
+  //     date_trip
+  //   })
+  //   .then(data => {
+  //     return !data
+  //       ? "The story could not be updated"
+  //       : db("photos")
+  //           .where({ story_id: id })
+  //           .update({ url, description })
+  //           .then(data => {
+  //             return !data
+  //               ? "There was a problem updating the photo"
+  //               : findCity(city)
+  //                   .then(data => {
+  //                     return !data
+  //                       ? addLocationStories(id, city, country)
+  //                       : editLocationsStories(id, data.id);
+  //                   })
+  //                   .catch(error => {
+  //                     console.log(error);
+  //                   });
+  //           })
+  //           .catch(error => {
+  //             console.log(error);
+  //           });
+  //   })
+  //   .catch(error => {
+  //     console.log(error);
+  //   });
+}
+
+function updateStoryTable(id, story) {
+  return db("stories")
+    .where({ id })
+    .update(story);
+}
+
 function deleteStory(id) {
   return db("stories")
     .where({ id })
@@ -102,4 +174,31 @@ function deleteStory(id) {
         ? "Story has been deleted"
         : `There was a problem deleting story ${id}`
     );
+}
+
+function findCity(city) {
+  return db("locations")
+    .where(city)
+    .first();
+}
+
+function addLocationStories(id, city, country) {
+  return db("locations")
+    .insert({ city, country })
+    .then(location => {
+      return editLocationsStories(id, location[0]);
+    });
+}
+
+function editLocationsStories(story_id, location_id) {
+  return db("locationsStories")
+    .where({ story_id })
+    .update({ location_id })
+    .then(data => {
+      return getStoriesById(story_id);
+    });
+}
+
+function addLocation(location) {
+  return db("locations").insert(location);
 }
