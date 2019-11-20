@@ -37,8 +37,8 @@ router.get("/:id", checkValidtyId, (req, res) => {
 
 // ADD A STORY
 
-router.post("/", checkBodyRequest, (req, res) => {
-  Stories.insertStory(req.body)
+router.post("/", [checkBodyRequest, checkTitleExists, checkTextStoryExists, checkCityExists], (req, res) => {
+  Stories.insertStory(req.body, req.cityExists, req.cityId)
     .then(data => {
       res.status(200).json(data);
     })

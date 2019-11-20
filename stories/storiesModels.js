@@ -54,21 +54,31 @@ function getStoriesBy(filter) {
     .first();
 }
 
-function insertStory(story) {
-  return db("stories")
-    .insert({
-      title: story.title,
-      story: story.story,
-      date_trip: story.date_trip
-    })
-    .then(storyId => {
-      const newPhoto = insertPhoto(story, storyId[0]);
-      const newLocation = insertLocation(story);
-      return Promise.all([newPhoto, newLocation])
-        .then(data => {
-          return insertLocationStory(storyId[0], data[1][0])
-            .then(() => {
-              return getStoriesById(storyId[0]);
+function insertStory(storyBody, cityExists, cityId) {
+  switch (cityExists) {
+    case false:
+      const insertStoryAddStory = db("stories").insert({
+        title: storyBody.title,
+        story: storyBody.story,
+        date_trip: storyBody.date_trip
+      });
+      const insertStoryAddLocation = addLocation({
+        city: storyBody.city,
+        country: storyBody.country
+      });
+      return Promise.all([insertStoryAddStory, insertStoryAddLocation])
+        .then(values => {
+          const insertStoryAddPhoto = insertPhoto(storyBody, values[0][0]);
+          const insertStoryAddLocationsStories = addLocationsStories(
+            values[0][0],
+            values[1][0]
+          );
+          return Promise.all([
+            insertStoryAddPhoto,
+            insertStoryAddLocationsStories
+          ])
+            .then(values => {
+              return values[1];
             })
             .catch(error => {
               console.log(error);
@@ -77,7 +87,37 @@ function insertStory(story) {
         .catch(error => {
           console.log(error);
         });
-    });
+    case true:
+      return db("stories")
+        .insert({
+          title: storyBody.title,
+          story: storyBody.story,
+          date_trip: storyBody.date_trip
+        })
+        .then(data => {
+          const insertStoryAddPhoto = insertPhoto(storyBody, data[0]);
+          const insertStoryAddLocationsStories = addLocationsStories(
+            data[0],
+            cityId
+          );
+          return Promise.all([
+            insertStoryAddPhoto,
+            insertStoryAddLocationsStories
+          ])
+            .then(values => {
+              return values[1];
+            })
+            .catch(error => {
+              console.log(error);
+            });
+        })
+        .catch(error => {
+          console.log(error);
+        });
+
+    default:
+      console.log("yay");
+  }
 }
 
 function insertPhoto(story, storyId) {
@@ -178,7 +218,7 @@ function findCity(city) {
     .first();
 }
 
-function addLocationStories(storyId, locationId) {
+function addLocationsStories(storyId, locationId) {
   return db("locationsStories")
     .insert({
       story_id: storyId,
@@ -204,14 +244,14 @@ function updateLocationsStories(story_id, location_id) {
     });
 }
 
-function editLocationsStories(story_id, location_id) {
-  return db("locationsStories")
-    .where({ story_id })
-    .update({ location_id })
-    .then(data => {
-      return getStoriesById(story_id);
-    });
-}
+// function editLocationsStories(story_id, location_id) {
+//   return db("locationsStories")
+//     .where({ story_id })
+//     .update({ location_id })
+//     .then(data => {
+//       return getStoriesById(story_id);
+//     });
+// }
 
 function addLocation(location) {
   return db("locations").insert(location);
