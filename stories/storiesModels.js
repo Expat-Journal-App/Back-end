@@ -3,7 +3,8 @@ const db = require("../database/db-config");
 module.exports = {
   getAll,
   getStoriesById,
-  insertStory
+  insertStory,
+  deleteStory
 };
 
 function getAll() {
@@ -90,4 +91,15 @@ function insertLocationStory(storyId, locationId) {
     story_id: storyId,
     location_id: locationId
   });
+}
+
+function deleteStory(id) {
+  return db("stories")
+    .where({ id })
+    .del()
+    .then(data =>
+      !!data
+        ? "Story has been deleted"
+        : `There was a problem deleting story ${id}`
+    );
 }
