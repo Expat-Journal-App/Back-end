@@ -128,20 +128,6 @@ function insertPhoto(story, storyId) {
   });
 }
 
-function insertLocation(story) {
-  return db("locations").insert({
-    city: story.city,
-    country: story.country
-  });
-}
-
-function insertLocationStory(storyId, locationId) {
-  return db("locationsStories").insert({
-    story_id: storyId,
-    location_id: locationId
-  });
-}
-
 function updateStory(id, storyBody, cityExists, cityId) {
   switch (cityExists) {
     case false:
@@ -244,6 +230,10 @@ function updateLocationsStories(story_id, location_id) {
     });
 }
 
+function addLocation(location) {
+  return db("locations").insert(location);
+}
+
 // function editLocationsStories(story_id, location_id) {
 //   return db("locationsStories")
 //     .where({ story_id })
@@ -253,6 +243,16 @@ function updateLocationsStories(story_id, location_id) {
 //     });
 // }
 
-function addLocation(location) {
-  return db("locations").insert(location);
-}
+// function insertLocation(story) {
+//   return db("locations").insert({
+//     city: story.city,
+//     country: story.country
+//   });
+// }
+
+// function insertLocationStory(storyId, locationId) {
+//   return db("locationsStories").insert({
+//     story_id: storyId,
+//     location_id: locationId
+//   });
+// }
