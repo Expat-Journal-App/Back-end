@@ -53,7 +53,7 @@ router.post("/", checkBodyRequest, (req, res) => {
 
 router.put(
   "/:id",
-  [checkValidtyId, checkTitleExists, checkTextStoryExists, checkCityExists],
+  [checkValidtyId, checkBodyRequest, checkTitleExists, checkTextStoryExists, checkCityExists],
   (req, res) => {
     const { id } = req.params;
     Stories.updateStory(id, req.body, req.cityExists, req.cityId)

@@ -20,11 +20,9 @@ function checkValidtyId(req, res, next) {
       }
     })
     .catch(error => {
-      res
-        .status(500)
-        .json({
-          message: `Error: story ${id} could not be found: ${error.message}`
-        });
+      res.status(500).json({
+        message: `Error: story ${id} could not be found: ${error.message}`
+      });
     });
 }
 
@@ -73,11 +71,9 @@ function checkTextStoryExists(req, res, next) {
       }
     })
     .catch(error => {
-      res
-        .status(500)
-        .json({
-          message: `There was an error editing the story: ${error.message}`
-        });
+      res.status(500).json({
+        message: `There was an error editing the story: ${error.message}`
+      });
     });
 }
 
@@ -96,10 +92,8 @@ function checkCityExists(req, res, next) {
       }
     })
     .catch(error => {
-      res
-        .status(500)
-        .json({
-          message: `There was an error editing the story: ${error.message}`
-        });
+      res.status(500).json({
+        message: `There was an error editing the story: ${error.message}`
+      });
     });
 }
