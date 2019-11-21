@@ -27,4 +27,4 @@
         - Returns: Object with the story properties described above. Checks if all required properties have been submitted to the server and returns an error if not. 
     - <b>[DELETE]</b> to `/api/stories/:id`
         - Name: Delete a story by `id`. Checks if `id` exists.
-        - Returns: `{message: "Story has been deleted"}` if story and depending photo has been deleted or `{message: `There was a problem deleting story ${id}`}` if there was a problem
+        - Returns: `{message: "Story has been deleted"}` if story and depending photo has been deleted or `{message: `There was a problem deleting story ${id}`}` if there was a problem.
