@@ -63,15 +63,12 @@ function insertStory(storyBody, cityExists, cityId) {
           story: storyBody.story,
           date_trip: storyBody.date_trip
         },
-        ["id"]
+        "id"
       );
-      const insertStoryAddLocation = addLocation(
-        {
-          city: storyBody.city,
-          country: storyBody.country
-        },
-        ["id"]
-      );
+      const insertStoryAddLocation = addLocation({
+        city: storyBody.city,
+        country: storyBody.country
+      });
       return Promise.all([insertStoryAddStory, insertStoryAddLocation])
         .then(values => {
           const insertStoryAddPhoto = insertPhoto(storyBody, values[0][0]);
@@ -133,7 +130,7 @@ function insertPhoto(story, storyId) {
       description: story.description,
       story_id: storyId
     },
-    ["id"]
+    "id"
   );
 }
 
@@ -220,10 +217,10 @@ function addLocationsStories(storyId, locationId) {
         story_id: Number(storyId),
         location_id: locationId
       },
-      ["id"]
+      "id"
     )
     .then(data => {
-      console.log(data)
+      console.log(data);
       return getStoriesById(storyId);
     })
     .catch(error => {
@@ -244,7 +241,7 @@ function updateLocationsStories(story_id, location_id) {
 }
 
 function addLocation(location) {
-  return db("locations").insert(location);
+  return db("locations").insert(location, "id");
 }
 
 // function editLocationsStories(story_id, location_id) {
