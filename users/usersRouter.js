@@ -31,4 +31,23 @@ router.post("/register", (req, res) => {
     });
 });
 
+router.post("/login", (req, res) => {
+  let { username, password } = req.body;
+  Users.getUserBy({ username })
+    .then(user => {
+      if (user && bcrypt.compareSync(password, user.password)) {
+        res.status(200).json({ message: `Welcome ${user.username}` });
+      } else {
+        res.status(401).json({ message: `Wrong credentials` });
+      }
+    })
+    .catch(error => {
+      res
+        .status(500)
+        .json({
+          message: `There was an error logging you in: ${error.message}`
+        });
+    });
+});
+
 module.exports = router;
