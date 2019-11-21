@@ -125,7 +125,7 @@ function insertPhoto(story, storyId) {
     url: story.url,
     description: story.description,
     story_id: storyId
-  });
+  }, 'id');
 }
 
 function updateStory(id, storyBody, cityExists, cityId) {
@@ -209,7 +209,7 @@ function addLocationsStories(storyId, locationId) {
     .insert({
       story_id: storyId,
       location_id: locationId
-    })
+    }, 'id')
     .then(() => {
       return getStoriesById(storyId);
     })
