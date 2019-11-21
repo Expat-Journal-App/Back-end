@@ -20,7 +20,7 @@ router.get("/test", restricted, (req, res) => {
 });
 
 // GET ALL STORIES ENDPOINTS
-router.get("/", (req, res) => {
+router.get("/", restricted, (req, res) => {
   Stories.getAll()
     .then(data => {
       res.status(200).json(data);
@@ -33,7 +33,7 @@ router.get("/", (req, res) => {
 });
 
 // GET STORY BY ID ENDPOINT
-router.get("/:id", checkValidtyId, (req, res) => {
+router.get("/:id", restricted, checkValidtyId, (req, res) => {
   res.status(200).json(req.data);
 });
 
@@ -41,7 +41,7 @@ router.get("/:id", checkValidtyId, (req, res) => {
 
 router.post(
   "/",
-  [checkBodyRequest, checkTitleExists, checkTextStoryExists, checkCityExists],
+  [restricted, checkBodyRequest, checkTitleExists, checkTextStoryExists, checkCityExists],
   (req, res) => {
     Stories.insertStory(req.body, req.cityExists, req.cityId)
       .then(data => {
@@ -61,7 +61,7 @@ router.post(
 
 router.put(
   "/:id",
-  [
+  [ restricted,
     checkValidtyId,
     checkBodyRequest,
     checkTitleExists,
@@ -84,7 +84,7 @@ router.put(
 
 // DELETE A STORY
 
-router.delete("/:id", checkValidtyId, (req, res) => {
+router.delete("/:id", [restricted, checkValidtyId], (req, res) => {
   const { id } = req.params;
   Stories.deleteStory(id)
     .then(data => {
