@@ -96,7 +96,7 @@ function insertStory(storyBody, cityExists, cityId) {
           title: storyBody.title,
           story: storyBody.story,
           date_trip: storyBody.date_trip
-        })
+        }, 'id')
         .then(data => {
           const insertStoryAddPhoto = insertPhoto(storyBody, data[0]);
           const insertStoryAddLocationsStories = addLocationsStories(
