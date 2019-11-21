@@ -57,15 +57,21 @@ function getStoriesBy(filter) {
 function insertStory(storyBody, cityExists, cityId) {
   switch (cityExists) {
     case false:
-      const insertStoryAddStory = db("stories").insert({
-        title: storyBody.title,
-        story: storyBody.story,
-        date_trip: storyBody.date_trip
-      }, 'id');
-      const insertStoryAddLocation = addLocation({
-        city: storyBody.city,
-        country: storyBody.country
-      }, 'id');
+      const insertStoryAddStory = db("stories").insert(
+        {
+          title: storyBody.title,
+          story: storyBody.story,
+          date_trip: storyBody.date_trip
+        },
+        ["id"]
+      );
+      const insertStoryAddLocation = addLocation(
+        {
+          city: storyBody.city,
+          country: storyBody.country
+        },
+        ["id"]
+      );
       return Promise.all([insertStoryAddStory, insertStoryAddLocation])
         .then(values => {
           const insertStoryAddPhoto = insertPhoto(storyBody, values[0][0]);
@@ -121,11 +127,14 @@ function insertStory(storyBody, cityExists, cityId) {
 }
 
 function insertPhoto(story, storyId) {
-  return db("photos").insert({
-    url: story.url,
-    description: story.description,
-    story_id: storyId
-  }, 'id');
+  return db("photos").insert(
+    {
+      url: story.url,
+      description: story.description,
+      story_id: storyId
+    },
+    ["id"]
+  );
 }
 
 function updateStory(id, storyBody, cityExists, cityId) {
@@ -206,10 +215,13 @@ function findCity(city) {
 
 function addLocationsStories(storyId, locationId) {
   return db("locationsStories")
-    .insert({
-      story_id: storyId,
-      location_id: locationId
-    }, 'id')
+    .insert(
+      {
+        story_id: storyId,
+        location_id: locationId
+      },
+      ["id"]
+    )
     .then(() => {
       return getStoriesById(storyId);
     })
