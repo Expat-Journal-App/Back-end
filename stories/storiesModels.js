@@ -222,7 +222,8 @@ function addLocationsStories(storyId, locationId) {
       },
       ["Id"]
     )
-    .then(() => {
+    .then(data => {
+      console.log(data)
       return getStoriesById(storyId);
     })
     .catch(error => {
