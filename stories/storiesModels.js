@@ -217,7 +217,7 @@ function addLocationsStories(storyId, locationId) {
   return db("locationsStories")
     .insert(
       {
-        story_id: storyId,
+        story_id: Number(storyId),
         location_id: locationId
       },
       ["id"]
