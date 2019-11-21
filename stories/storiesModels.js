@@ -57,11 +57,14 @@ function getStoriesBy(filter) {
 function insertStory(storyBody, cityExists, cityId) {
   switch (cityExists) {
     case false:
-      const insertStoryAddStory = db("stories").insert({
-        title: storyBody.title,
-        story: storyBody.story,
-        date_trip: storyBody.date_trip
-      });
+      const insertStoryAddStory = db("stories").insert(
+        {
+          title: storyBody.title,
+          story: storyBody.story,
+          date_trip: storyBody.date_trip
+        },
+        "id"
+      );
       const insertStoryAddLocation = addLocation({
         city: storyBody.city,
         country: storyBody.country
@@ -93,7 +96,7 @@ function insertStory(storyBody, cityExists, cityId) {
           title: storyBody.title,
           story: storyBody.story,
           date_trip: storyBody.date_trip
-        })
+        }, 'id')
         .then(data => {
           const insertStoryAddPhoto = insertPhoto(storyBody, data[0]);
           const insertStoryAddLocationsStories = addLocationsStories(
@@ -121,11 +124,14 @@ function insertStory(storyBody, cityExists, cityId) {
 }
 
 function insertPhoto(story, storyId) {
-  return db("photos").insert({
-    url: story.url,
-    description: story.description,
-    story_id: storyId
-  });
+  return db("photos").insert(
+    {
+      url: story.url,
+      description: story.description,
+      story_id: storyId
+    },
+    "id"
+  );
 }
 
 function updateStory(id, storyBody, cityExists, cityId) {
@@ -206,11 +212,15 @@ function findCity(city) {
 
 function addLocationsStories(storyId, locationId) {
   return db("locationsStories")
-    .insert({
-      story_id: storyId,
-      location_id: locationId
-    })
+    .insert(
+      {
+        story_id: Number(storyId),
+        location_id: locationId
+      },
+      "id"
+    )
     .then(data => {
+      console.log(data);
       return getStoriesById(storyId);
     })
     .catch(error => {
@@ -231,7 +241,7 @@ function updateLocationsStories(story_id, location_id) {
 }
 
 function addLocation(location) {
-  return db("locations").insert(location);
+  return db("locations").insert(location, "id");
 }
 
 // function editLocationsStories(story_id, location_id) {
