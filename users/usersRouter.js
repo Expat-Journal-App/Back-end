@@ -1,6 +1,7 @@
 const router = require("express").Router();
 const Users = require("./usersModels");
 const bcrypt = require("bcryptjs");
+const jwt = require("jsonwebtoken");
 
 // DUMMY ENDPOINT TO TEST
 router.get("/", (req, res) => {
@@ -36,18 +37,32 @@ router.post("/login", (req, res) => {
   Users.getUserBy({ username })
     .then(user => {
       if (user && bcrypt.compareSync(password, user.password)) {
-        res.status(200).json({ message: `Welcome ${user.username}` });
+        const token = generateToken(user);
+        res
+          .status(200)
+          .json({ message: `Welcome ${user.username}`, token: token });
       } else {
         res.status(401).json({ message: `Wrong credentials` });
       }
     })
     .catch(error => {
-      res
-        .status(500)
-        .json({
-          message: `There was an error logging you in: ${error.message}`
-        });
+      res.status(500).json({
+        message: `There was an error logging you in: ${error.message}`
+      });
     });
 });
+
+function generateToken(user) {
+  const payload = {
+    subject: user.id,
+    username: user.username
+  };
+  const options = {
+    expiresIn: "1d"
+  };
+  const result = jwt.sign(payload, process.env.SECRET, options);
+
+  return result;
+}
 
 module.exports = router;
