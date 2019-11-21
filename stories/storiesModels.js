@@ -63,14 +63,14 @@ function insertStory(storyBody, cityExists, cityId) {
           story: storyBody.story,
           date_trip: storyBody.date_trip
         },
-        ["id"]
+        ["Id"]
       );
       const insertStoryAddLocation = addLocation(
         {
           city: storyBody.city,
           country: storyBody.country
         },
-        ["id"]
+        ["Id"]
       );
       return Promise.all([insertStoryAddStory, insertStoryAddLocation])
         .then(values => {
@@ -133,7 +133,7 @@ function insertPhoto(story, storyId) {
       description: story.description,
       story_id: storyId
     },
-    ["id"]
+    ["Id"]
   );
 }
 
@@ -220,7 +220,7 @@ function addLocationsStories(storyId, locationId) {
         story_id: storyId,
         location_id: locationId
       },
-      ["id"]
+      ["Id"]
     )
     .then(() => {
       return getStoriesById(storyId);
