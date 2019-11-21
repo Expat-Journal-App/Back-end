@@ -1,5 +1,5 @@
 node_modules
 .vscode
-*.sqlite3
+/database/stories.sqlite3
 
 
