@@ -8,7 +8,8 @@
     "migrate": "npx knex migrate:latest",
     "seed": "npx knex seed:run",
     "start": "node index.js",
-    "server": "nodemon index.js"
+    "server": "nodemon index.js",
+    "coverage": "cross-env DB_ENV=testing jest --coverage"
   },
   "jest": {
     "testEnvironment": "node"
