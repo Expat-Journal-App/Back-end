@@ -4,7 +4,7 @@
 
 - The following endpoints are available for now:
 
-    - <b>[GET]</b> to `/api/stories
+    - <b>[GET]</b> to `/api/stories`
       - Name: Get all stories
       - Returns: Array of objects, each object is a story. Check endpoint to fetch stories by `id` below to know what properties are available to you.
     - <b>[GET]</b> to `/api/stories/:id`
@@ -25,6 +25,9 @@
     - <b>[POST]</b> to `/api/stories/`
         - Name: Post a new story
         - Returns: Object with the story properties described above. Checks if all required properties have been submitted to the server and returns an error if not. 
+    - <b> [PUT] </b> to `/api/stories/:id`
+        - Name: Edit a story. You can pass any `key:value` pair contained within the story object and the server will update that property.
+        - Returns: the newly edited object.
     - <b>[DELETE]</b> to `/api/stories/:id`
         - Name: Delete a story by `id`. Checks if `id` exists.
         - Returns: `{message: "Story has been deleted"}` if story and depending photo has been deleted or `{message: `There was a problem deleting story ${id}`}` if there was a problem
