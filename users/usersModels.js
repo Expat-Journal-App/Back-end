@@ -19,8 +19,8 @@ function getUserBy(filter) {
 
 function addUser(user) {
   return db("users")
-    .insert(user)
-    .then(ids => {
-      return getUserById(ids[0]);
+    .insert(user, 'id')
+    .then(id => {
+      return getUserById(id);
     });
 }
