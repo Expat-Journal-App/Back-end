@@ -4,7 +4,7 @@
 
 - The following endpoints are available for now:
 
-    - <b>[GET]</b> to `/api/stories
+    - <b>[GET]</b> to `/api/stories`
       - Name: Get all stories
       - Returns: Array of objects, each object is a story. Check endpoint to fetch stories by `id` below to know what properties are available to you.
     - <b>[GET]</b> to `/api/stories/:id`
